@@ -1,0 +1,106 @@
+#include <stdio.h>
+
+int main(){
+    char nome[50];
+    int populacao;
+    float area;
+    float pib;
+    int pontosTuristicos;
+    float densidadeDemografica;
+} Carta;
+
+// Função para pegar o valor numérico de um atributo
+float obterValor(Carta c, int atributo) {
+    switch (atributo) {
+        case 1: return (float)c.populacao;
+        case 2: return c.area;
+        case 3: return c.pib;
+        case 4: return (float)c.pontosTuristicos;
+        case 5: return c.densidadeDemografica;
+        default: return 0;
+    }
+}
+
+// Função para exibir o nome do atributo
+void nomeAtributo(int atributo) {
+    switch (atributo) {
+        case 1: printf("População"); break;
+        case 2: printf("Área"); break;
+        case 3: printf("PIB"); break;
+        case 4: printf("Pontos Turísticos"); break;
+        case 5: printf("Densidade Demográfica"); break;
+    }
+}
+
+// Função de comparação com dois atributos
+void compararCartas(Carta c1, Carta c2, int attr1, int attr2) {
+    float v1c1 = obterValor(c1, attr1);
+    float v1c2 = obterValor(c2, attr1);
+    float v2c1 = obterValor(c1, attr2);
+    float v2c2 = obterValor(c2, attr2);
+
+    // Mostrar dados
+    printf("\nComparando %s vs %s\n", c1.nome, c2.nome);
+
+    printf("\nAtributo 1: ");
+    nomeAtributo(attr1);
+    printf("\n%s: %.2f | %s: %.2f\n", c1.nome, v1c1, c2.nome, v1c2);
+
+    printf("\nAtributo 2: ");
+    nomeAtributo(attr2);
+    printf("\n%s: %.2f | %s: %.2f\n", c1.nome, v2c1, c2.nome, v2c2);
+
+    // Ajustar valores de densidade demográfica (menor vence)
+    float scoreC1 = (attr1 == 5 ? -v1c1 : v1c1) + (attr2 == 5 ? -v2c1 : v2c1);
+    float scoreC2 = (attr1 == 5 ? -v1c2 : v1c2) + (attr2 == 5 ? -v2c2 : v2c2);
+
+    printf("\nSoma dos atributos:\n%s: %.2f | %s: %.2f\n", c1.nome, scoreC1, c2.nome, scoreC2);
+
+    if (scoreC1 > scoreC2)
+        printf("\nVencedor: %s\n", c1.nome);
+    else if (scoreC2 > scoreC1)
+        printf("\nVencedor: %s\n", c2.nome);
+    else
+        printf("\nEmpate!\n");
+}
+
+// Menu dinâmico para escolha dos atributos
+int escolherAtributo(int bloqueado) {
+    int opcao;
+    printf("\nEscolha um atributo:\n");
+
+    if (bloqueado != 1) printf("1 - População\n");
+    if (bloqueado != 2) printf("2 - Área\n");
+    if (bloqueado != 3) printf("3 - PIB\n");
+    if (bloqueado != 4) printf("4 - Pontos Turísticos\n");
+    if (bloqueado != 5) printf("5 - Densidade Demográfica\n");
+
+    printf("Digite sua opção: ");
+    scanf("%d", &opcao);
+
+    // Verifica se está repetido
+    if (opcao == bloqueado || opcao < 1 || opcao > 5) {
+        printf("Opção inválida ou repetida. Tente novamente.\n");
+        return escolherAtributo(bloqueado);
+    }
+
+    return opcao;
+}
+
+// Função principal
+int main() {
+    // Cartas cadastradas
+    Carta carta1 = {"Brasil", 211000000, 8515767.0, 2.055, 25, 24.77};
+    Carta carta2 = {"Japão", 126300000, 377975.0, 5.154, 45, 334.19};
+
+    printf("=== Super Trunfo - Comparação com Dois Atributos ===\n");
+
+    // Escolha dos dois atributos
+    int attr1 = escolherAtributo(0);
+    int attr2 = escolherAtributo(attr1);
+
+    // Comparar as cartas
+    compararCartas(carta1, carta2, attr1, attr2);
+
+    return 0;
+}
